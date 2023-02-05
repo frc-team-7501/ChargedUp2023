@@ -9,9 +9,8 @@ public final class Constants {
         public static final int VICTORSPX_DRIVE_FL = 1;
         public static final int VICTORSPX_DRIVE_FR = 3;
 
-        // Arms
-        public static final int SPARKMAX_RIGHTARM = 41;
-        public static final int SPARKMAX_LEFTARM = 40;
+        //MISC CAN Bus
+        public static final int pigeonIMU = 20;
 
     }
 
