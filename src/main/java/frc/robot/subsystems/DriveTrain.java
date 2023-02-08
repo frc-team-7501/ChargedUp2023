@@ -4,8 +4,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
-import frc.robot.Constants;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,7 +21,7 @@ public class DriveTrain extends SubsystemBase {
 
   private final DifferentialDrive differentialDrive = new DifferentialDrive(groupL, groupR);
 
-  private final PigeonIMU pigeonIMU = new PigeonIMU(Constants.CANMapping.pigeonIMU);
+  private final PigeonIMU pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
 
   private static DriveTrain instance;
   public static DriveTrain getInstance() {
