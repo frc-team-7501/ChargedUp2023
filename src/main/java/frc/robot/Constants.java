@@ -18,6 +18,7 @@ public final class Constants {
 
         //MISC CAN Bus
         public static final int PIGEON_IMU = 20;
+        public static final int PNEUMATIC_CAN = 30;
     }
 
     public static final class ControllerMapping {
@@ -31,7 +32,12 @@ public final class Constants {
         public static final int PNEUMATIC_SINGLE_SOLENOID_HIGH = 1;
         public static final int PNEUMATIC_SINGLE_SOLENOID_LOW = 2;
 
-        public static final int PNEUMATIC_HIGH = 0;
-        public static final int PNEUMATIC_LOW = 1;
+        public static final int PNEUMATIC_HIGH = 1;
+        public static final int PNEUMATIC_LOW = 2;
+    }
+
+    public static final class MiscMapping{
+        public static final boolean BRAKE_ON = true;
+        public static final boolean BRAKE_OFF = false;
     }
 }

@@ -12,22 +12,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoBalancePIDCommand extends PIDCommand {
+public class AutoLockPIDCommand extends PIDCommand {
   private final DriveTrain driveTrain;
 
-  public AutoBalancePIDCommand(final DriveTrain driveTrain) {
+  public AutoLockPIDCommand(final DriveTrain driveTrain) {
     super(
         // The controller that the command will use
         // p = power, i = increase, d = dampening
-        new PIDController(0.45, .007, .01),
+        new PIDController(0.4, .003, .01),
         // This should return the measurement
         () -> driveTrain.getGyroPitch(),
         // This should return the setpoint (can also be a constant)
         () -> 0,
         // This uses the output
         output -> {
-          driveTrain.drive(output*=.045,0,false);
-          SmartDashboard.putNumber("Output", output*=.045);
+          driveTrain.drive(output*=.03,0,false);
+          SmartDashboard.putNumber("Output", output*=.03);
         });
     addRequirements(driveTrain);
     this.driveTrain = driveTrain;

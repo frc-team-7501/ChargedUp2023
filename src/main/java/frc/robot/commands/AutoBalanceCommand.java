@@ -25,9 +25,9 @@ public class AutoBalanceCommand extends CommandBase {
   @Override
   public void execute() {
     double robotPitch = driveTrain.getGyroPitch();
-    if (robotPitch > 1) {
+    if (robotPitch > -3) {
       driveTrain.drive(.2,0 , false);
-    } else if (robotPitch < -1) {
+    } else if (robotPitch < 3) {
       driveTrain.drive(-.2,0 , false);
     } else {
       driveTrain.drive(0,0 , false);

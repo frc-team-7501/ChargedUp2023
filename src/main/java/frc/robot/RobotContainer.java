@@ -3,13 +3,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ControllerMapping;
-import frc.robot.Constants.PneumaticsMapping;
-import frc.robot.commands.AutoBalanceCommand;
-import frc.robot.commands.ClawCommand;
-import frc.robot.commands.DriveManualCommand;
-import frc.robot.subsystems.Claw;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.Constants.*;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
 import frc.robot.utils.ExtendedXboxController;
 //import frc.robot.utils.InputNormalizer;
@@ -49,11 +45,16 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     controller.b_LeftBumper()
-        .toggleOnTrue(new AutoBalanceCommand(driveTrain));
+        .toggleOnTrue(new AutoBalancePIDCommand(driveTrain));
+        controller.b_RightBumper()
+        .toggleOnTrue(new AutoLockPIDCommand(driveTrain));
 
-    controller.b_Y().onTrue(new ClawCommand(claw, PneumaticsMapping.PNEUMATIC_HIGH));
+    controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
+    controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
     controller.b_X().onTrue(new ClawCommand(claw, PneumaticsMapping.PNEUMATIC_LOW));
+    controller.b_Y().onTrue(new ClawCommand(claw, PneumaticsMapping.PNEUMATIC_HIGH));
+
 
   }
 }
