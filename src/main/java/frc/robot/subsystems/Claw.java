@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,11 +15,11 @@ import frc.robot.Constants.PneumaticsMapping;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Claw extends SubsystemBase {
-  private final Solenoid airSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+  private final Solenoid highLowSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
       PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_AIR);
-  private final Solenoid highSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+  private final Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
       PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_HIGH);
-  private final Solenoid lowSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+  private final Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
       PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_LOW);
 
   private static Claw instance;
@@ -29,35 +33,40 @@ public class Claw extends SubsystemBase {
   public Claw() {
   }
 
-  private int bean = 0;
   public void ClawOpen() {
-    SmartDashboard.putNumber("Counter Open", bean);
-    SmartDashboard.putString("Claw", "Open");
-    bean++;
-    airSolenoid.set(false);
-    highSolenoid.set(false);
-    lowSolenoid.set(false);
+    // Schedules code to be delivered without disrupting other code
+    final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+
+    highLowSolenoid.set(false);
+    extendSolenoid.set(false);
+    retractSolenoid.set(true);
+
+    // Waits a second without stopping any other code
+    final Runnable retract = new Runnable(){
+      public void run(){
+        retractSolenoid.set(false);
+      }
+    };
+    executorService.schedule(retract, 1000, TimeUnit.MILLISECONDS);
   }
 
   public void ClawCloseHigh() {
-    SmartDashboard.putString("Claw", "High");
-    if (airSolenoid.get()) {
+    if (highLowSolenoid.get()) {
       ClawOpen();
     } else {
-      airSolenoid.set(true);
-      lowSolenoid.set(false);
-      highSolenoid.set(true);
+      highLowSolenoid.set(true);
+      retractSolenoid.set(false);
+      extendSolenoid.set(true);
     }
   }
 
   public void ClawCloseLow() {
-    SmartDashboard.putString("Claw", "Low");
-    if (airSolenoid.get()) {
+    if (highLowSolenoid.get()) {
       ClawOpen();
     } else {
-      airSolenoid.set(true);
-      highSolenoid.set(false);
-      lowSolenoid.set(true);
+      highLowSolenoid.set(true);
+      extendSolenoid.set(true);
+      retractSolenoid.set(false);
     }
   }
 
@@ -67,9 +76,18 @@ public class Claw extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("AirSolenoid", airSolenoid.get());
-    SmartDashboard.putBoolean("HighSolenoid", highSolenoid.get());
-    SmartDashboard.putBoolean("LowSolenoid", lowSolenoid.get());
+    // Periodic is called every 20ms, updating our SmartDashboard
+    if(highLowSolenoid.get()){
+      SmartDashboard.putString("High/Low", "High");
+    } else{
+      SmartDashboard.putString("High/Low", "Low");
+    }
+
+    if(extendSolenoid.get()){
+      SmartDashboard.putString("Extend/Retract", "Extend");
+    } else{
+      SmartDashboard.putString("Extend/Retract", "Retract");
+    }
+    
   }
 }

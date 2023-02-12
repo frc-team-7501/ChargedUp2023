@@ -31,9 +31,6 @@ public final class Constants {
         public static final int PNEUMATIC_SINGLE_SOLENOID_AIR = 0;
         public static final int PNEUMATIC_SINGLE_SOLENOID_HIGH = 1;
         public static final int PNEUMATIC_SINGLE_SOLENOID_LOW = 2;
-
-        public static final int PNEUMATIC_HIGH = 1;
-        public static final int PNEUMATIC_LOW = 2;
     }
 
     public static final class MiscMapping{

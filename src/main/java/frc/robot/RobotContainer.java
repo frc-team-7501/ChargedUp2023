@@ -52,8 +52,8 @@ public class RobotContainer {
     controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
     controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
-    controller.b_X().onTrue(new ClawCommand(claw, PneumaticsMapping.PNEUMATIC_LOW));
-    controller.b_Y().onTrue(new ClawCommand(claw, PneumaticsMapping.PNEUMATIC_HIGH));
+    controller.b_X().onTrue(new ClawLowInstantCommand(claw));
+    controller.b_Y().onTrue(new ClawHighInstantCommand(claw));
 
 
   }
