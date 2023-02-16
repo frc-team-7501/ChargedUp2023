@@ -4,9 +4,10 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+//import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
+import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
 import frc.robot.commands.autonomous.MoveToPitch;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
@@ -31,9 +32,8 @@ public class RobotContainer {
   // Autonomous commands
     private final Command auton0 = new SequentialCommandGroup(
       new MoveToPitch(driveTrain, 12, .4),
-      new WaitCommand(.7),
-      new AutoBalancePIDCommand(driveTrain),
-      new WaitCommand(20)
+      new AutonAutoBalancePIDCommand(driveTrain),
+      new AutoLockPIDCommand(driveTrain)
     );
 
   public RobotContainer() {
