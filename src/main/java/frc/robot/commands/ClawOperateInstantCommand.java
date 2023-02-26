@@ -7,10 +7,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Claw;
 
-public class ClawLowInstantCommand extends InstantCommand {
+public class ClawOperateInstantCommand extends InstantCommand {
   private final Claw claw;
 
-  public ClawLowInstantCommand(final Claw claw) {
+  public ClawOperateInstantCommand(final Claw claw) {
     addRequirements(claw);
     this.claw = claw;
   }
@@ -18,6 +18,6 @@ public class ClawLowInstantCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    claw.ClawCloseLow();
+    claw.ClawClose();
   }
 }

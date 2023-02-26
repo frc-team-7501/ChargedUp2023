@@ -15,12 +15,10 @@ import frc.robot.Constants.PneumaticsMapping;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Claw extends SubsystemBase {
-  private final Solenoid highLowSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
-      PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_AIR);
   private final Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
-      PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_HIGH);
+      PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_EXTEND);
   private final Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
-      PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_LOW);
+      PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_RETRACT);
 
   private static Claw instance;
 
@@ -37,7 +35,6 @@ public class Claw extends SubsystemBase {
     // Schedules code to be delivered without disrupting other code
     final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
-    highLowSolenoid.set(false);
     extendSolenoid.set(false);
     retractSolenoid.set(true);
 
@@ -50,23 +47,12 @@ public class Claw extends SubsystemBase {
     executorService.schedule(retract, 1000, TimeUnit.MILLISECONDS);
   }
 
-  public void ClawCloseHigh() {
-    if (highLowSolenoid.get()) {
+  public void ClawClose() {
+    if (extendSolenoid.get()) {
       ClawOpen();
     } else {
-      highLowSolenoid.set(true);
       retractSolenoid.set(false);
       extendSolenoid.set(true);
-    }
-  }
-
-  public void ClawCloseLow() {
-    if (highLowSolenoid.get()) {
-      ClawOpen();
-    } else {
-      highLowSolenoid.set(true);
-      extendSolenoid.set(true);
-      retractSolenoid.set(false);
     }
   }
 
@@ -77,16 +63,10 @@ public class Claw extends SubsystemBase {
   @Override
   public void periodic() {
     // Periodic is called every 20ms, updating our SmartDashboard
-    if(highLowSolenoid.get()){
-      SmartDashboard.putString("High/Low", "High");
-    } else{
-      SmartDashboard.putString("High/Low", "Low");
-    }
-
     if(extendSolenoid.get()){
-      SmartDashboard.putString("Extend/Retract", "Extend");
+      SmartDashboard.putString("Extend/Retract", "Extend/Closed");
     } else{
-      SmartDashboard.putString("Extend/Retract", "Retract");
+      SmartDashboard.putString("Extend/Retract", "Retract/Open");
     }
     
   }

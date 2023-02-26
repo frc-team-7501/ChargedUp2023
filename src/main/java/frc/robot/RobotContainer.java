@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-//import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
@@ -12,7 +11,6 @@ import frc.robot.commands.autonomous.MoveToPitch;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
 import frc.robot.utils.ExtendedXboxController;
-//import frc.robot.utils.InputNormalizer;
 
 public class RobotContainer {
   // Create joysticks
@@ -22,6 +20,15 @@ public class RobotContainer {
   // Create subsystems
   private final DriveTrain driveTrain = DriveTrain.getInstance();
   private final Claw claw = Claw.getInstance();
+  private final Lift lift = Lift.getInstance();
+  private final Slide slide = Slide.getInstance();
+  private final Elbow elbow = Elbow.getInstance();
+
+  // Autonomous commands
+  private final Command auton0 = new SequentialCommandGroup(
+      new MoveToPitch(driveTrain, 12, .4),
+      new AutonAutoBalancePIDCommand(driveTrain),
+      new AutoLockPIDCommand(driveTrain));
 
   // Create commands
   private final Command driveManualCommand = new DriveManualCommand(
@@ -29,22 +36,23 @@ public class RobotContainer {
       () -> stick.getY() * (stick.getThrottle() * 0.5 + 0.5), () -> -stick.getX(),
       () -> stick.getTop());
 
-  // Autonomous commands
-    private final Command auton0 = new SequentialCommandGroup(
-      new MoveToPitch(driveTrain, 12, .4),
-      new AutonAutoBalancePIDCommand(driveTrain),
-      new AutoLockPIDCommand(driveTrain)
-    );
+  private final Command liftManualCommand = new LiftControlCommand(lift, () -> controller.getRightY());
+
+  private final Command slideManualCommand = new SlideControlCommand(slide, () -> controller.getLeftY());
+
+  private final Command elbowManualCommand = new ElbowControlCommand(elbow, () -> controller.getRightX());
 
   public RobotContainer() {
 
     configureButtonBindings();
 
     driveTrain.setDefaultCommand(driveManualCommand);
+    lift.setDefaultCommand(liftManualCommand);
+    slide.setDefaultCommand(slideManualCommand);
+    elbow.setDefaultCommand(elbowManualCommand);
 
     ShuffleboardTab subsysTab = Shuffleboard.getTab("Subsystems");
     subsysTab.add("DriveTrain", driveTrain);
-
   }
 
   // Lifecycle hooks
@@ -66,8 +74,7 @@ public class RobotContainer {
     controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
     controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
-    controller.b_X().onTrue(new ClawLowInstantCommand(claw));
-    controller.b_Y().onTrue(new ClawHighInstantCommand(claw));
+    controller.b_Y().onTrue(new ClawOperateInstantCommand(claw));
 
   }
 
