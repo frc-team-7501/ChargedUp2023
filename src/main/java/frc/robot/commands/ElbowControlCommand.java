@@ -29,9 +29,11 @@ public class ElbowControlCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //invert and slow down elbow motor speed.
     elbowSpeedDouble = elbowSpeed.getAsDouble() * -1;
+    elbowSpeedDouble = elbowSpeedDouble * 0.5;
     
-    // Set to zero to compensate for stick drift
+    // Set to zero to compensate for stick drift.
     if (Math.abs(elbowSpeedDouble) < 0.05)
     elbowSpeedDouble = 0;
 

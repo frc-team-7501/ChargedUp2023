@@ -18,6 +18,7 @@ public class Elbow extends SubsystemBase {
   /** Creates a new Elbow. */
   public Elbow() {
     elbowMotor.restoreFactoryDefaults();
+    encoder = elbowMotor.getEncoder();
   }
 
   public static Elbow getInstance() {

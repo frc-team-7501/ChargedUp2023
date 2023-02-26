@@ -36,11 +36,11 @@ public class RobotContainer {
       () -> stick.getY() * (stick.getThrottle() * 0.5 + 0.5), () -> -stick.getX(),
       () -> stick.getTop());
 
-  private final Command liftManualCommand = new LiftControlCommand(lift, () -> controller.getRightY());
+  private final Command liftManualCommand = new LiftControlCommand(lift, () -> controller.getLeftY());
 
-  private final Command slideManualCommand = new SlideControlCommand(slide, () -> controller.getLeftY());
+  private final Command slideManualCommand = new SlideControlCommand(slide, () -> controller.getLeftX());
 
-  private final Command elbowManualCommand = new ElbowControlCommand(elbow, () -> controller.getRightX());
+  private final Command elbowManualCommand = new ElbowControlCommand(elbow, () -> controller.getRightY());
 
   public RobotContainer() {
 
@@ -71,6 +71,9 @@ public class RobotContainer {
     controller.b_RightBumper()
         .toggleOnTrue(new AutoLockPIDCommand(driveTrain));
 
+    controller.b_X()
+        .toggleOnTrue(new ElbowPIDControlCommand(elbow, -150));
+
     controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
     controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
@@ -82,7 +85,6 @@ public class RobotContainer {
    * Returns the selected autonomous command.
    */
   public Command getAutonomousCommand() {
-    // TODO: SendableChooser?
     return auton0;
   }
 }

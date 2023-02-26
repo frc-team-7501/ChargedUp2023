@@ -67,7 +67,7 @@ public class DriveTrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Yaw", getGyroYaw());
+    //SmartDashboard.putNumber("Yaw", getGyroYaw());
     SmartDashboard.putNumber("Pitch", getGyroPitch());
     // SmartDashboard.putNumber("EncoderR", encoderRight.getDistance());
     // SmartDashboard.putNumber("EncoderL", encoderLeft.getDistance());
