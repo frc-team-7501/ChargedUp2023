@@ -21,6 +21,10 @@ public class Elbow extends SubsystemBase {
     encoder = elbowMotor.getEncoder();
   }
 
+  public void resetEncoder() {
+    elbowMotor.getEncoder().setPosition(0);
+  } 
+
   public static Elbow getInstance() {
     if (instance == null)
     instance = new Elbow();

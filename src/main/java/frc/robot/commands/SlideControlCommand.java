@@ -9,14 +9,15 @@ import frc.robot.subsystems.Slide;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.DoubleSupplier;
+import frc.robot.Constants.MiscMapping;
 
 public class SlideControlCommand extends CommandBase {
   /** Creates a new SlideControlCommand. */
   private final Slide slide;
   private final DoubleSupplier slideSpeed;
   private double slideSpeedDouble = 0;
-  private DigitalInput outLimitSwitch = new DigitalInput(2);
-  private DigitalInput inLimitSwitch = new DigitalInput(3);
+  private DigitalInput outLimitSwitch = new DigitalInput(MiscMapping.OUT_LIMIT_SWITCH);
+  private DigitalInput inLimitSwitch = new DigitalInput(MiscMapping.IN_LIMIT_SWITCH);
 
   public SlideControlCommand(Slide slidein, DoubleSupplier slideSpeedin) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,8 +40,6 @@ public class SlideControlCommand extends CommandBase {
     slideSpeedDouble = 0;
 
     // Stopping slide if limit switch is activated
-    SmartDashboard.putBoolean("OLS", outLimitSwitch.get());
-    SmartDashboard.putNumber("SlideSpeed", slideSpeedDouble);
     if (slideSpeedDouble < 0) {
       if (!outLimitSwitch.get()) {
         slide.moveSlide(0);

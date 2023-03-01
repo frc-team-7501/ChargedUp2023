@@ -31,7 +31,7 @@ public class MoveToPitch extends CommandBase {
   @Override
   public void execute() {
     // === DO NOT REMOVE ===
-    SmartDashboard.putString("String", "sting :)");
+    //SmartDashboard.putString("String", "sting :)");
     double robotPitch = driveTrain.getGyroPitch();
     if (Math.abs(robotPitch) < targetPitch) {
       driveTrain.drive(roboSpeed, 0 , false);

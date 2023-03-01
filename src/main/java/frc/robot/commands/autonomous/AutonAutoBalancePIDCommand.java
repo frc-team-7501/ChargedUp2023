@@ -20,7 +20,7 @@ public class AutonAutoBalancePIDCommand extends PIDCommand {
     super(
         // The controller that the command will use
         // p = power, i = increase, d = dampening
-        new PIDController(0.45, .007, .01),
+        new PIDController(0.4, .008, .02),
         // This should return the measurement
         () -> driveTrain.getGyroPitch(),
         // This should return the setpoint (can also be a constant)
@@ -28,7 +28,7 @@ public class AutonAutoBalancePIDCommand extends PIDCommand {
         // This uses the output
         output -> {
           driveTrain.drive(output*=.045,0,false);
-          SmartDashboard.putNumber("Output", output*=.045);
+          //SmartDashboard.putNumber("Output", output*=.045);
         });
     addRequirements(driveTrain);
     this.driveTrain = driveTrain;
@@ -51,7 +51,7 @@ public class AutonAutoBalancePIDCommand extends PIDCommand {
     SmartDashboard.putBoolean("At Setpoint", getController().atSetpoint());
     if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
-      SmartDashboard.putNumber("Output Counter", outputCounter);
+      //SmartDashboard.putNumber("Output Counter", outputCounter);
       if(outputCounter > 100){
         outputCounter = 0;
         return true;

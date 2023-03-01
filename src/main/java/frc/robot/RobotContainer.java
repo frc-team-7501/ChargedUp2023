@@ -59,10 +59,14 @@ public class RobotContainer {
 
   public void autonomousInit() {
     driveTrain.setBrakeMode(true);
+    elbow.resetEncoder();
+    lift.resetEncoder();
   }
 
   public void teleopInit() {
     driveTrain.setBrakeMode(false);
+    elbow.resetEncoder();
+    lift.resetEncoder();
   }
 
   private void configureButtonBindings() {
@@ -72,13 +76,17 @@ public class RobotContainer {
         .toggleOnTrue(new AutoLockPIDCommand(driveTrain));
 
     controller.b_X()
-        .toggleOnTrue(new ElbowPIDControlCommand(elbow, -150));
+        .toggleOnTrue(new ElbowPIDControlCommand(elbow, -110));
+    controller.b_A()
+        .toggleOnTrue(new LiftPIDControlCommand(lift, 0));
+
 
     controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
     controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
     controller.b_Y().onTrue(new ClawOperateInstantCommand(claw));
-
+    
+   
   }
 
   /**

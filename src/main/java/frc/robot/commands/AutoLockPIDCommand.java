@@ -27,7 +27,7 @@ public class AutoLockPIDCommand extends PIDCommand {
         // This uses the output
         output -> {
           driveTrain.drive(output*=.03,0,false);
-          SmartDashboard.putNumber("Output", output*=.03);
+          //SmartDashboard.putNumber("Output", output*=.03);
         });
     addRequirements(driveTrain);
     this.driveTrain = driveTrain;

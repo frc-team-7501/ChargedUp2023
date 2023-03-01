@@ -19,23 +19,24 @@ public class ElbowPIDControlCommand extends PIDCommand {
   public ElbowPIDControlCommand(final Elbow elbow, final double position) {
     super(
         // The controller that the command will use
-        new PIDController(0.25, 0.007, 0.01),
+        new PIDController(0.042, 0.007501, 0.01337),
         // This should return the measurement
         () -> elbow.getElbowPosition(),
         // This should return the setpoint (can also be a constant)
-        () -> 0,
+        () -> position,
         // This uses the output
         output -> {
           // Use the output here
-          elbow.moveElbow(output);
-          SmartDashboard.putNumber("Elbow Output", output);
+          elbow.moveElbow(output*=.21);
+          //SmartDashboard.putNumber("Elbow Output", output);
+          SmartDashboard.putNumber("Elbow",elbow.getElbowPosition());
         });
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(elbow);
     this.elbow = elbow;
     // Configure additional PID options by calling `getController` here.
     getController().setTolerance(15);
-    getController().setSetpoint(position);
+    getController().setSetpoint(0);
   }
 
   // Called once the command ends or is interrupted.
