@@ -27,8 +27,7 @@ public class ElbowPIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          elbow.moveElbow(output*=.21);
-          //SmartDashboard.putNumber("Elbow Output", output);
+          elbow.moveElbow(output*=.17);
           SmartDashboard.putNumber("Elbow",elbow.getElbowPosition());
         });
     // Use addRequirements() here to declare subsystem dependencies.

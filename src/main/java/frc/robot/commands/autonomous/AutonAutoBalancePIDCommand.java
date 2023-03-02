@@ -20,7 +20,7 @@ public class AutonAutoBalancePIDCommand extends PIDCommand {
     super(
         // The controller that the command will use
         // p = power, i = increase, d = dampening
-        new PIDController(0.4, .008, .02),
+        new PIDController(0.435, .008, .03),
         // This should return the measurement
         () -> driveTrain.getGyroPitch(),
         // This should return the setpoint (can also be a constant)

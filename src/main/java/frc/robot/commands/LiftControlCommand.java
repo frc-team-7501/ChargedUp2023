@@ -37,7 +37,6 @@ public class LiftControlCommand extends CommandBase {
       liftSpeedDouble = 0;
 
     lift.moveLift(liftSpeedDouble);
-    // SmartDashboard.putNumber("Lift Output", output);
     SmartDashboard.putNumber("Lift", lift.getLiftPosition());
   }
 

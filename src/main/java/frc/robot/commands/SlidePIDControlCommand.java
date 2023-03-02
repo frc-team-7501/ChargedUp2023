@@ -5,42 +5,45 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.subsystems.DriveTrain;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Slide;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoBalancePIDCommand extends PIDCommand {
-  private final DriveTrain driveTrain;
-
-  public AutoBalancePIDCommand(final DriveTrain driveTrain) {
+public class SlidePIDControlCommand extends PIDCommand {
+  private final Slide slide;
+  
+  /** Creates a new SlidePIDControlCommand. */
+  public SlidePIDControlCommand(final Slide slide, final double position) {
     super(
         // The controller that the command will use
-        // p = power, i = increase, d = dampening
-        new PIDController(0.45, .0065, .03),
+        new PIDController(0.04, 0, 0),
         // This should return the measurement
-        () -> driveTrain.getGyroPitch(),
+        () -> slide.getSlidePosition(),
         // This should return the setpoint (can also be a constant)
-        () -> 0,
+        () -> position,
         // This uses the output
         output -> {
-          driveTrain.drive(output*=.045,0,false);
+          // Use the output here
+          slide.moveSlide(output*=.2);
+          //SmartDashboard.putNumber("Slide Output", output);
+          SmartDashboard.putNumber("Slide",slide.getSlidePosition());
         });
-    addRequirements(driveTrain);
-    this.driveTrain = driveTrain;
 
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(slide);
+    this.slide = slide;
     // Configure additional PID options by calling `getController` here.
-    getController().setTolerance(11);
+    getController().setTolerance(15);
     getController().setSetpoint(0);
-        
+
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveTrain.drive(0, 0, false);
+    slide.moveSlide(0);;
   }
 
   // Returns true when the command should end.

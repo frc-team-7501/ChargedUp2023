@@ -4,20 +4,16 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Slide;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.util.function.DoubleSupplier;
-import frc.robot.Constants.MiscMapping;
 
 public class SlideControlCommand extends CommandBase {
   /** Creates a new SlideControlCommand. */
   private final Slide slide;
   private final DoubleSupplier slideSpeed;
   private double slideSpeedDouble = 0;
-  private DigitalInput outLimitSwitch = new DigitalInput(MiscMapping.OUT_LIMIT_SWITCH);
-  private DigitalInput inLimitSwitch = new DigitalInput(MiscMapping.IN_LIMIT_SWITCH);
 
   public SlideControlCommand(Slide slidein, DoubleSupplier slideSpeedin) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,31 +34,8 @@ public class SlideControlCommand extends CommandBase {
     // Set to zero to compensate for stick drift
     if (Math.abs(slideSpeedDouble) < 0.05)
     slideSpeedDouble = 0;
-
-    // Stopping slide if limit switch is activated
-    if (slideSpeedDouble < 0) {
-      if (!outLimitSwitch.get()) {
-        slide.moveSlide(0);
-      } else {
-        slide.moveSlide(slideSpeedDouble);
-      }
-    } else if (slideSpeedDouble > 0) {
-      if (!inLimitSwitch.get()) {
-        slide.moveSlide(0);
-      } else {
-        slide.moveSlide(slideSpeedDouble);
-      }
-    } else {
-      slide.moveSlide(0);
-    }
-  
-
-  //Let controller if limit switch has been reached.
-  if (!outLimitSwitch.get() || !inLimitSwitch.get()){
-    SmartDashboard.putBoolean("SlideLimit", false);
-  } else {
-    SmartDashboard.putBoolean("SlideLimit", true);
-  }
+    slide.moveSlide(slideSpeedDouble);
+    SmartDashboard.putNumber("Slide", slide.getSlidePosition());
 }
 
   // Called once the command ends or is interrupted.
