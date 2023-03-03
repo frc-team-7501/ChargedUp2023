@@ -23,14 +23,14 @@ public class Elbow extends SubsystemBase {
 
   public void resetEncoder() {
     elbowMotor.getEncoder().setPosition(0);
-  } 
+  }
 
   public static Elbow getInstance() {
     if (instance == null)
-    instance = new Elbow();
+      instance = new Elbow();
     return instance;
   }
-  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -41,7 +41,11 @@ public class Elbow extends SubsystemBase {
   }
 
   public void moveElbow(double speed) {
-    elbowMotor.set(speed);
+    if (encoder.getPosition() < 0 || speed < 0) {
+      elbowMotor.set(speed);
+    } else {
+      elbowMotor.set(0);
+    }
   }
 
   public void stop() {

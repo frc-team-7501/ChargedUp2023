@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
+import frc.robot.commands.autonomous.AutonElbowPIDControlCommand;
+import frc.robot.commands.autonomous.AutonLiftPIDControlCommand;
+import frc.robot.commands.autonomous.AutonSlidePIDControlCommand;
 import frc.robot.commands.autonomous.MoveToPitch;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
@@ -28,9 +31,40 @@ public class RobotContainer {
 
   // Autonomous commands
   private final Command auton0 = new SequentialCommandGroup(
-      new MoveToPitch(driveTrain, 12, .4),
+      new MoveToPitch(driveTrain, 15, .5),
       new AutonAutoBalancePIDCommand(driveTrain),
       new AutoLockPIDCommand(driveTrain));
+
+  private final Command auton1 = new ParallelCommandGroup(
+      new LiftPIDControlCommand(lift, 360),
+      new SlidePIDControlCommand(slide, -257),
+      new SequentialCommandGroup(
+          new WaitCommand(2.5),
+          new ElbowPIDControlCommand(elbow, -130)),
+      new SequentialCommandGroup(
+          new WaitCommand(5),
+          new ClawOperateInstantCommand(claw),
+          new WaitCommand(1),
+          new ClawOperateInstantCommand(claw),
+          new WaitCommand(0.2)// ,
+      // new ElbowPIDControlCommand(elbow, 0),
+      // new ParallelCommandGroup(
+      // new LiftPIDControlCommand(lift, 0),
+      // new SlidePIDControlCommand(slide, 0),
+      // new ElbowPIDControlCommand(elbow, 0))
+      ));
+
+  private final Command auton2 = new SequentialCommandGroup(
+      new ParallelCommandGroup(
+          new AutonLiftPIDControlCommand(lift, 360),
+          new AutonSlidePIDControlCommand(slide, -257),
+          new AutonElbowPIDControlCommand(elbow, -130)),
+      new ClawOperateInstantCommand(claw),
+      new ClawOperateInstantCommand(claw),
+      new WaitCommand(0.2),
+      new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
+          new AutonSlidePIDControlCommand(slide, 0),
+          new AutonLiftPIDControlCommand(lift, 0)));
 
   // Create commands
   private final Command driveManualCommand = new DriveManualCommand(
@@ -91,8 +125,8 @@ public class RobotContainer {
                 new LiftPIDControlCommand(lift, 360),
                 new SlidePIDControlCommand(slide, -257),
                 new SequentialCommandGroup(
-                  new WaitCommand(2.5),
-                  new ElbowPIDControlCommand(elbow, -115))));
+                    new WaitCommand(2.5),
+                    new ElbowPIDControlCommand(elbow, -130))));
 
     // Auto lift to Lower Goal
     controller.b_A()
@@ -100,7 +134,15 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new LiftPIDControlCommand(lift, 168),
                 new SlidePIDControlCommand(slide, 0),
-                new ElbowPIDControlCommand(elbow, -110)));
+                new ElbowPIDControlCommand(elbow, -126)));
+
+    // Auto lift to ground pickup location
+    controller.b_RightStick()
+        .toggleOnTrue(
+            new ParallelCommandGroup(
+                new LiftPIDControlCommand(lift, 119),
+                new SlidePIDControlCommand(slide, 0),
+                new ElbowPIDControlCommand(elbow, -250)));
 
     // Auto retract everything to zero
     controller.b_B().toggleOnTrue(
@@ -123,6 +165,8 @@ public class RobotContainer {
    * Returns the selected autonomous command.
    */
   public Command getAutonomousCommand() {
-    return auton0;
+    // return auton0;
+    // return auton1;
+    return auton2;
   }
 }
