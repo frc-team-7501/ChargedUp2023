@@ -27,7 +27,7 @@ public class SlidePIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          slide.moveSlide(output*=.2);
+          slide.moveSlide(output*=.52);
           //SmartDashboard.putNumber("Slide Output", output);
           SmartDashboard.putNumber("Slide",slide.getSlidePosition());
         });

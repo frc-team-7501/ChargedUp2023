@@ -27,7 +27,7 @@ public class LiftPIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          lift.moveLift(output*=.21);
+          lift.moveLift(output*=.72);
           //SmartDashboard.putNumber("Lift Output", output);
           SmartDashboard.putNumber("Lift",lift.getLiftPosition());
         });

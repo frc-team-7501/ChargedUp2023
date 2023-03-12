@@ -28,9 +28,9 @@ public class AutonLiftPIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          lift.moveLift(output*=.21);
-          //SmartDashboard.putNumber("Lift Output", output);
-          SmartDashboard.putNumber("Lift",lift.getLiftPosition());
+          lift.moveLift(output *= .92);
+          // SmartDashboard.putNumber("Lift Output", output);
+          SmartDashboard.putNumber("Lift", lift.getLiftPosition());
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
@@ -41,11 +41,11 @@ public class AutonLiftPIDControlCommand extends PIDCommand {
     getController().setSetpoint(0);
   }
 
-   // Called once the command ends or is interrupted.
-   @Override
-   public void end(boolean interrupted) {
-     lift.moveLift(0);
-   }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    lift.moveLift(0);
+  }
 
   // Returns true when the command should end.
   @Override
@@ -54,13 +54,13 @@ public class AutonLiftPIDControlCommand extends PIDCommand {
     if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
       //SmartDashboard.putNumber("Output Counter", outputCounter);
-      if(outputCounter > 100){
+      if(outputCounter > 40){
         outputCounter = 0;
         return true;
-      } else if(!getController().atSetpoint()) {
+      } 
+      } else {
         outputCounter = 0;
       }
-    }
     return false;
   }
 }

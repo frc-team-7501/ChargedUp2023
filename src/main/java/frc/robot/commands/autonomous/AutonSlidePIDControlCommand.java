@@ -15,7 +15,7 @@ import frc.robot.subsystems.Slide;
 public class AutonSlidePIDControlCommand extends PIDCommand {
   private final Slide slide;
   private int outputCounter = 0;
-  
+
   /** Creates a new SlidePIDControlCommand. */
   public AutonSlidePIDControlCommand(final Slide slide, final double position) {
     super(
@@ -28,9 +28,9 @@ public class AutonSlidePIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          slide.moveSlide(output*=.2);
-          //SmartDashboard.putNumber("Slide Output", output);
-          SmartDashboard.putNumber("Slide",slide.getSlidePosition());
+          slide.moveSlide(output *= .72);
+          // SmartDashboard.putNumber("Slide Output", output);
+          SmartDashboard.putNumber("Slide", slide.getSlidePosition());
         });
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,22 +44,23 @@ public class AutonSlidePIDControlCommand extends PIDCommand {
 
   @Override
   public void end(boolean interrupted) {
-    slide.moveSlide(0);;
+    slide.moveSlide(0);
+    ;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean("At Setpoint", getController().atSetpoint());
-    if(getController().atSetpoint()){
+    if (getController().atSetpoint()) {
       outputCounter = outputCounter + 1;
-      //SmartDashboard.putNumber("Output Counter", outputCounter);
-      if(outputCounter > 100){
+      // SmartDashboard.putNumber("Output Counter", outputCounter);
+      if (outputCounter > 40) {
         outputCounter = 0;
         return true;
-      } else if(!getController().atSetpoint()) {
-        outputCounter = 0;
       }
+    } else {
+      outputCounter = 0;
     }
     return false;
   }

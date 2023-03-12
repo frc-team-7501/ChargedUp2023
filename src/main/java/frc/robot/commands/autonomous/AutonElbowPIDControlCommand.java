@@ -28,7 +28,7 @@ public class AutonElbowPIDControlCommand extends PIDCommand {
         // This uses the output
         output -> {
           // Use the output here
-          elbow.moveElbow(output*=.17);
+          elbow.moveElbow(output*=.7);
           SmartDashboard.putNumber("Elbow",elbow.getElbowPosition());
         });
     // Use addRequirements() here to declare subsystem dependencies.
@@ -52,12 +52,12 @@ public class AutonElbowPIDControlCommand extends PIDCommand {
     if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
       //SmartDashboard.putNumber("Output Counter", outputCounter);
-      if(outputCounter > 100){
+      if(outputCounter > 25){
         outputCounter = 0;
         return true;
-      } else if(!getController().atSetpoint()) {
+      } 
+      } else {
         outputCounter = 0;
-      }
     }
     return false;
   }

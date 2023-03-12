@@ -24,6 +24,7 @@ public final class Constants {
 
         // MISC CAN Bus
         public static final int PIGEON_IMU = 20;
+        public static final int PNEUMATIC_HUB = 5;
     }
 
     public static final class ControllerMapping {
@@ -34,7 +35,7 @@ public final class Constants {
     public static final class PneumaticsMapping {
         // Pneumatics Control Module
         public static final int PNEUMATIC_SINGLE_SOLENOID_EXTEND = 1;
-        public static final int PNEUMATIC_SINGLE_SOLENOID_RETRACT = 2;
+        public static final int PNEUMATIC_SINGLE_SOLENOID_RETRACT = 0;
     }
 
     public static final class MiscMapping {
@@ -44,5 +45,6 @@ public final class Constants {
         public static final int BOTTOM_LIMIT_SWITCH = 1;
         public static final int OUT_LIMIT_SWITCH = 2;
         public static final int IN_LIMIT_SWITCH = 3;
+        public static final int IR_TRIGGER_SWITCH = 4;
     }
 }

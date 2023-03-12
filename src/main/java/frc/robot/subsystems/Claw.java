@@ -12,12 +12,13 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PneumaticsMapping;
+import frc.robot.Constants.CANMapping;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Claw extends SubsystemBase {
-  private final Solenoid extendSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+  private final Solenoid extendSolenoid = new Solenoid(CANMapping.PNEUMATIC_HUB, PneumaticsModuleType.REVPH,
       PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_EXTEND);
-  private final Solenoid retractSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM,
+  private final Solenoid retractSolenoid = new Solenoid(CANMapping.PNEUMATIC_HUB,PneumaticsModuleType.REVPH,
       PneumaticsMapping.PNEUMATIC_SINGLE_SOLENOID_RETRACT);
 
   private static Claw instance;
@@ -54,6 +55,11 @@ public class Claw extends SubsystemBase {
       retractSolenoid.set(false);
       extendSolenoid.set(true);
     }
+  }
+
+  public void ClawIRClose() {
+      retractSolenoid.set(false);
+      extendSolenoid.set(true);
   }
 
   public void stop() {

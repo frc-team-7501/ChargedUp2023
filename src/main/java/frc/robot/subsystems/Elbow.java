@@ -41,11 +41,11 @@ public class Elbow extends SubsystemBase {
   }
 
   public void moveElbow(double speed) {
-    if (encoder.getPosition() < 0 || speed < 0) {
+    //if (encoder.getPosition() < 0 || speed < 0) {
       elbowMotor.set(speed);
-    } else {
-      elbowMotor.set(0);
-    }
+    //} else {
+    //  elbowMotor.set(0);
+    //}
   }
 
   public void stop() {
