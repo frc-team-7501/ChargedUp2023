@@ -71,9 +71,9 @@ public class SimpleControllerSlow {
     }
     var current = inputSupplier.getAsDouble();
     var error = current - setpoint;
-    SmartDashboard.putNumber("Setpoint", setpoint);
-    SmartDashboard.putNumber("Current", current);
-    SmartDashboard.putNumber("error", error);
+    //SmartDashboard.putNumber("Setpoint", setpoint);
+    //SmartDashboard.putNumber("Current", current);
+    //SmartDashboard.putNumber("error", error);
 
     double output;
     if (error > tolerance) {

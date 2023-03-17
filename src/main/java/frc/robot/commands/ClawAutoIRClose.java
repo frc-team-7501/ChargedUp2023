@@ -30,9 +30,9 @@ public class ClawAutoIRClose extends CommandBase {
   public void execute() {
 if (!irTriggerSwitch.get()) {
         claw.ClawIRClose();
-        SmartDashboard.putString("irTrigger", "ON");
+        SmartDashboard.putBoolean("irTrigger", true);
       } else {
-        SmartDashboard.putString("irTrigger", "OFF");
+        SmartDashboard.putBoolean("irTrigger", false);
       }
   }
 

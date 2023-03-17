@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,6 +12,7 @@ import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
 import frc.robot.commands.autonomous.AutonDriveTrainMoveCommand;
+import frc.robot.commands.autonomous.AutonDriveTrainTurnPIDCommand;
 import frc.robot.commands.autonomous.AutonElbowPIDControlCommand;
 import frc.robot.commands.autonomous.AutonLiftPIDControlCommand;
 import frc.robot.commands.autonomous.AutonSlidePIDControlCommand;
@@ -33,14 +35,8 @@ public class RobotContainer {
 
         // Create other variables
         // Autonomous commands
-        // Auton 0 moves backwards and balances the robot
-        private final Command auton0 = new SequentialCommandGroup(
-                        new MoveToPitch(driveTrain, 15, .5),
-                        new AutonAutoBalancePIDCommand(driveTrain),
-                        new AutoLockPIDCommand(driveTrain));
-
-        // Auton 1 drops cone/cube and backs up
-        private final Command auton1 = new SequentialCommandGroup(
+        // Auton drops cone/cube and backs up
+        private final Command HighGoalBackupTurn = new SequentialCommandGroup(
                         new ParallelCommandGroup(
                                         new AutonLiftPIDControlCommand(lift, 360),
                                         new AutonSlidePIDControlCommand(slide, -257),
@@ -53,10 +49,17 @@ public class RobotContainer {
                         new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
                                         new AutonSlidePIDControlCommand(slide, 0),
                                         new AutonLiftPIDControlCommand(lift, 0),
-                                        new AutonDriveTrainMoveCommand(driveTrain, -2600, .5)));
+                                        new AutonDriveTrainMoveCommand(driveTrain, -2700, .5)),
+                        new AutonDriveTrainTurnPIDCommand(driveTrain, 180));
 
-        // Auton 2 extends and drops a cone/cube on the high goal
-        private final Command auton2 = new SequentialCommandGroup(
+        // Auton moves backwards and balances the robot
+        private final Command BalanceOnly = new SequentialCommandGroup(
+                        new MoveToPitch(driveTrain, 15, .4),
+                        new AutonAutoBalancePIDCommand(driveTrain),
+                        new AutoLockPIDCommand(driveTrain));
+
+        // Auton extends and drops a cone/cube on the high goal
+        private final Command HighGoalOnly = new SequentialCommandGroup(
                         new ParallelCommandGroup(
                                         new AutonLiftPIDControlCommand(lift, 360),
                                         new AutonSlidePIDControlCommand(slide, -257),
@@ -70,21 +73,21 @@ public class RobotContainer {
                                         new AutonSlidePIDControlCommand(slide, 0),
                                         new AutonLiftPIDControlCommand(lift, 0)));
 
-        // Auton 3 extends and drops a cone/cube on the low goal
-        private final Command auton3 = new SequentialCommandGroup(
+        // Auton extends and drops a cone/cube on the low goal
+        private final Command LowGoalOnly = new SequentialCommandGroup(
                         new ParallelCommandGroup(
                                         new AutonLiftPIDControlCommand(lift, 168),
-                                        new AutonElbowPIDControlCommand(elbow, -126)),
-                        new WaitCommand(1),
-                        new ClawOperateInstantCommand(claw),
+                                        new AutonElbowPIDControlCommand(elbow, -126),
+                                        new ClawOperateInstantCommand(claw)),
+                        new WaitCommand(.5),
                         new ClawOperateInstantCommand(claw),
                         new WaitCommand(0.2),
                         new ParallelCommandGroup(
                                         new AutonElbowPIDControlCommand(elbow, 0),
                                         new AutonLiftPIDControlCommand(lift, 0)));
 
-        // Auton 4 drops on the low goal, before moving backwards and balancing
-        private final Command auton4 = new SequentialCommandGroup(
+        // Auton drops on the low goal, before moving backwards and balancing
+        private final Command LowGoalBalance = new SequentialCommandGroup(
                         new ParallelCommandGroup(
                                         new AutonLiftPIDControlCommand(lift, 168),
                                         new AutonElbowPIDControlCommand(elbow, -126)),
@@ -100,6 +103,23 @@ public class RobotContainer {
                                                         new MoveToPitch(driveTrain, 15, .5),
                                                         new AutonAutoBalancePIDCommand(driveTrain),
                                                         new AutoLockPIDCommand(driveTrain))));
+
+        private final Command HighGoalBalance = new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                                        new AutonLiftPIDControlCommand(lift, 373),
+                                        new AutonSlidePIDControlCommand(slide, -257),
+                                        new ClawOperateInstantCommand(claw),
+                                        new SequentialCommandGroup(
+                                                        new WaitCommand(2),
+                                                        new AutonElbowPIDControlCommand(elbow, -163))),
+                        new ClawOperateInstantCommand(claw),
+                        new WaitCommand(0.3),
+                        new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
+                                        new AutonSlidePIDControlCommand(slide, 0),
+                                        new AutonLiftPIDControlCommand(lift, 0)),
+                        new MoveToPitch(driveTrain, 15, .4),
+                        new AutonAutoBalancePIDCommand(driveTrain),
+                        new AutoLockPIDCommand(driveTrain));
 
         // Create commands
         private final Command driveManualCommand = new DriveManualCommand(
@@ -172,13 +192,13 @@ public class RobotContainer {
                                                                 new SlidePIDControlCommand(slide, 0),
                                                                 new ElbowPIDControlCommand(elbow, -145)));
 
-                // Auto lift to ground pickup location
+                // Auto lift to substation pickup location
                 controller.b_RightStick()
                                 .toggleOnTrue(
                                                 new ParallelCommandGroup(
-                                                                new LiftPIDControlCommand(lift, 119),
+                                                                new LiftPIDControlCommand(lift, 250),
                                                                 new SlidePIDControlCommand(slide, 0),
-                                                                new ElbowPIDControlCommand(elbow, -250)));
+                                                                new ElbowPIDControlCommand(elbow, -150)));
 
                 // Auto retract everything to zero
                 controller.b_B().toggleOnTrue(
@@ -201,10 +221,11 @@ public class RobotContainer {
          * Returns the selected autonomous command.
          */
         public Command getAutonomousCommand() {
-                // return auton0; // Backwards auto balance
-                return auton1; // Just backing up
-                // return auton2; // High Goal
-                // return auton3; // Low Goal
-                // return auton4; // Make Mark angry
+                // return HighGoalBackupTurn; // Place piece high, back up, turn 180
+                // return BalanceOnly; // Backwards auto balance
+                // return HighGoalOnly; // High Goal
+                // return LowGoalOnly; // Low Goal
+                // return LowGoalBalance; // Low goal auto balance (NOT TESTED)
+                 return HighGoalBalance; // High Goal then balance (cannot finish in 15 seconds at this time)
         }
 }

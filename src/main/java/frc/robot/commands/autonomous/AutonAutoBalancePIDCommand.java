@@ -28,13 +28,14 @@ public class AutonAutoBalancePIDCommand extends PIDCommand {
         // This uses the output
         output -> {
           driveTrain.drive(output*=.045,0,false);
+          //driveTrain.drive(output*=.055,0,false);
           //SmartDashboard.putNumber("Output", output*=.045);
         });
     addRequirements(driveTrain);
     this.driveTrain = driveTrain;
 
     // Configure additional PID options by calling `getController` here.
-    getController().setTolerance(11);
+    getController().setTolerance(8);
     getController().setSetpoint(0);
         
   }
