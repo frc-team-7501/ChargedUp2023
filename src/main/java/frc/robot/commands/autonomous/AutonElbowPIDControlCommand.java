@@ -52,7 +52,7 @@ public class AutonElbowPIDControlCommand extends PIDCommand {
     if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
       //SmartDashboard.putNumber("Output Counter", outputCounter);
-      if(outputCounter > 25){
+      if(outputCounter > 10){
         outputCounter = 0;
         return true;
       } 

@@ -3,7 +3,7 @@ package frc.robot.utils;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimpleControllerSlow {
   protected boolean enabled = false;

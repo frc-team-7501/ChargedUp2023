@@ -5,62 +5,60 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
-import frc.robot.subsystems.Slide;
+import frc.robot.subsystems.DriveTrain;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutonSlidePIDControlCommand extends PIDCommand {
-  private final Slide slide;
+public class AutonAutoBalancePIDCommandBlue extends PIDCommand {
+  private final DriveTrain driveTrain;
   private int outputCounter = 0;
 
-  /** Creates a new SlidePIDControlCommand. */
-  public AutonSlidePIDControlCommand(final Slide slide, final double position) {
+  public AutonAutoBalancePIDCommandBlue(final DriveTrain driveTrain) {
     super(
         // The controller that the command will use
-        new PIDController(0.04, 0, 0),
+        // p = power, i = increase, d = dampening
+        new PIDController(0.44, .007, .054),
         // This should return the measurement
-        () -> slide.getSlidePosition(),
+        () -> driveTrain.getGyroPitch(),
         // This should return the setpoint (can also be a constant)
-        () -> position,
+        () -> 0,
         // This uses the output
         output -> {
-          // Use the output here
-          slide.moveSlide(output *= .72);
-          // SmartDashboard.putNumber("Slide Output", output);
-          SmartDashboard.putNumber("Slide", slide.getSlidePosition());
+          driveTrain.drive(output*=.04,0,false);
+          //driveTrain.drive(output*=.055,0,false);
+          //SmartDashboard.putNumber("Output", output*=.045);
         });
+    addRequirements(driveTrain);
+    this.driveTrain = driveTrain;
 
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(slide);
-    this.slide = slide;
     // Configure additional PID options by calling `getController` here.
-    getController().setTolerance(15);
+    getController().setTolerance(8);
     getController().setSetpoint(0);
-
+        
   }
 
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    slide.moveSlide(0);
-    ;
+    driveTrain.drive(0, 0, false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean("At Setpoint", getController().atSetpoint());
-    if (getController().atSetpoint()) {
+    if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
-      // SmartDashboard.putNumber("Output Counter", outputCounter);
-      if (outputCounter > 10) {
+      //SmartDashboard.putNumber("Output Counter", outputCounter);
+      if(outputCounter > 100){
         outputCounter = 0;
         return true;
-      }
-    } else {
-      outputCounter = 0;
+      } 
+      } else {
+        outputCounter = 0;
     }
     return false;
   }

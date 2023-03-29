@@ -54,7 +54,7 @@ public class AutonLiftPIDControlCommand extends PIDCommand {
     if(getController().atSetpoint()){
       outputCounter = outputCounter + 1;
       //SmartDashboard.putNumber("Output Counter", outputCounter);
-      if(outputCounter > 40){
+      if(outputCounter > 10){
         outputCounter = 0;
         return true;
       } 

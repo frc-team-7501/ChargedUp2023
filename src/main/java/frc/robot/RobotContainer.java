@@ -1,9 +1,9 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+//import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+//import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.*;
 import frc.robot.commands.*;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
+import frc.robot.commands.autonomous.AutonAutoBalancePIDCommandBlue;
 import frc.robot.commands.autonomous.AutonDriveTrainMoveCommand;
 import frc.robot.commands.autonomous.AutonDriveTrainTurnPIDCommand;
 import frc.robot.commands.autonomous.AutonElbowPIDControlCommand;
@@ -28,6 +29,7 @@ public class RobotContainer {
 
         // Create subsystems
         private final DriveTrain driveTrain = DriveTrain.getInstance();
+        private final Limelight limelight = Limelight.getInstance();
         private final Claw claw = Claw.getInstance();
         private final Lift lift = Lift.getInstance();
         private final Slide slide = Slide.getInstance();
@@ -38,18 +40,18 @@ public class RobotContainer {
         // Auton drops cone/cube and backs up
         private final Command HighGoalBackupTurn = new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                                        new AutonLiftPIDControlCommand(lift, 360),
+                                        new AutonLiftPIDControlCommand(lift, 210),
                                         new AutonSlidePIDControlCommand(slide, -257),
                                         new ClawOperateInstantCommand(claw),
                                         new SequentialCommandGroup(
                                                         new WaitCommand(2),
-                                                        new AutonElbowPIDControlCommand(elbow, -130))),
+                                                        new AutonElbowPIDControlCommand(elbow, -155))),
                         new ClawOperateInstantCommand(claw),
                         new WaitCommand(0.4),
                         new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
                                         new AutonSlidePIDControlCommand(slide, 0),
                                         new AutonLiftPIDControlCommand(lift, 0),
-                                        new AutonDriveTrainMoveCommand(driveTrain, -2700, .5)),
+                                        new AutonDriveTrainMoveCommand(driveTrain, -2800, .5)),
                         new AutonDriveTrainTurnPIDCommand(driveTrain, 180));
 
         // Auton moves backwards and balances the robot
@@ -61,12 +63,12 @@ public class RobotContainer {
         // Auton extends and drops a cone/cube on the high goal
         private final Command HighGoalOnly = new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                                        new AutonLiftPIDControlCommand(lift, 360),
+                                        new AutonLiftPIDControlCommand(lift, 225),
                                         new AutonSlidePIDControlCommand(slide, -257),
                                         new ClawOperateInstantCommand(claw),
                                         new SequentialCommandGroup(
-                                                        new WaitCommand(2),
-                                                        new AutonElbowPIDControlCommand(elbow, -130))),
+                                                        new WaitCommand(1),
+                                                        new AutonElbowPIDControlCommand(elbow, -140))),
                         new ClawOperateInstantCommand(claw),
                         new WaitCommand(0.4),
                         new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
@@ -76,12 +78,12 @@ public class RobotContainer {
         // Auton extends and drops a cone/cube on the low goal
         private final Command LowGoalOnly = new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                                        new AutonLiftPIDControlCommand(lift, 168),
-                                        new AutonElbowPIDControlCommand(elbow, -126),
+                                        new AutonLiftPIDControlCommand(lift, 84),
+                                        new AutonElbowPIDControlCommand(elbow, -140),
                                         new ClawOperateInstantCommand(claw)),
-                        new WaitCommand(.5),
+                        new WaitCommand(.15),
                         new ClawOperateInstantCommand(claw),
-                        new WaitCommand(0.2),
+                        new WaitCommand(.15),
                         new ParallelCommandGroup(
                                         new AutonElbowPIDControlCommand(elbow, 0),
                                         new AutonLiftPIDControlCommand(lift, 0)));
@@ -89,37 +91,63 @@ public class RobotContainer {
         // Auton drops on the low goal, before moving backwards and balancing
         private final Command LowGoalBalance = new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                                        new AutonLiftPIDControlCommand(lift, 168),
-                                        new AutonElbowPIDControlCommand(elbow, -126)),
-                        new WaitCommand(1),
-                        new ClawOperateInstantCommand(claw),
-                        new ClawOperateInstantCommand(claw),
-                        new WaitCommand(0.2),
-                        new ParallelCommandGroup(
-                                        new AutonElbowPIDControlCommand(elbow, 0),
-                                        new AutonLiftPIDControlCommand(lift, 0),
-                                        new SequentialCommandGroup(
-                                                        new WaitCommand(.5),
-                                                        new MoveToPitch(driveTrain, 15, .5),
-                                                        new AutonAutoBalancePIDCommand(driveTrain),
-                                                        new AutoLockPIDCommand(driveTrain))));
-
-        private final Command HighGoalBalance = new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                        new AutonLiftPIDControlCommand(lift, 373),
-                                        new AutonSlidePIDControlCommand(slide, -257),
+                                        new AutonLiftPIDControlCommand(lift, 84),
+                                        new AutonSlidePIDControlCommand(slide, 0),
                                         new ClawOperateInstantCommand(claw),
                                         new SequentialCommandGroup(
-                                                        new WaitCommand(2),
-                                                        new AutonElbowPIDControlCommand(elbow, -163))),
+                                                        new WaitCommand(1),
+                                                        new AutonElbowPIDControlCommand(elbow, -140))),
                         new ClawOperateInstantCommand(claw),
                         new WaitCommand(0.3),
                         new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
                                         new AutonSlidePIDControlCommand(slide, 0),
                                         new AutonLiftPIDControlCommand(lift, 0)),
-                        new MoveToPitch(driveTrain, 15, .4),
+                        new MoveToPitch(driveTrain, 15, .5),
                         new AutonAutoBalancePIDCommand(driveTrain),
                         new AutoLockPIDCommand(driveTrain));
+
+        // Auton drops on the low goal, before moving backwards and balancing ON THE
+        // BLUE SIDE FOR MUSKEGONS WEIRD BALANCE
+        private final Command LowGoalBalanceBlue = new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                                        new AutonLiftPIDControlCommand(lift, 84),
+                                        new AutonSlidePIDControlCommand(slide, 0),
+                                        new ClawOperateInstantCommand(claw),
+                                        new SequentialCommandGroup(
+                                                        new WaitCommand(.5),
+                                                        new AutonElbowPIDControlCommand(elbow, -145))),
+                        new ClawOperateInstantCommand(claw),
+                        new WaitCommand(0.4),
+                        new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
+                                        new AutonSlidePIDControlCommand(slide, 0),
+                                        new AutonLiftPIDControlCommand(lift, 0)),
+                        new MoveToPitch(driveTrain, 15, .5),
+                        new AutonAutoBalancePIDCommandBlue(driveTrain),
+                        new AutoLockPIDCommand(driveTrain));
+
+        private final Command HighGoalBalance = new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                                        new AutonLiftPIDControlCommand(lift, 210),
+                                        new AutonSlidePIDControlCommand(slide, -257),
+                                        new ClawOperateInstantCommand(claw),
+                                        new SequentialCommandGroup(
+                                                        new WaitCommand(1.5),
+                                                        new AutonElbowPIDControlCommand(elbow, -155))),
+                        new ClawOperateInstantCommand(claw),
+                        new WaitCommand(0.4),
+                        new ParallelCommandGroup(new AutonElbowPIDControlCommand(elbow, 0),
+                                        new AutonSlidePIDControlCommand(slide, 0),
+                                        new AutonLiftPIDControlCommand(lift, 0)),
+                        new MoveToPitch(driveTrain, 15, .5),
+                        new AutonAutoBalancePIDCommand(driveTrain),
+                        new AutoLockPIDCommand(driveTrain));
+        
+        // Double Score Auton [WIP]
+        private final Command ScoreTwice = new SequentialCommandGroup(
+                new ParallelCommandGroup(
+                        new ElbowPIDControlCommand(elbow, -175)),
+                new ClawOperateInstantCommand(claw)
+        );
 
         // Create commands
         private final Command driveManualCommand = new DriveManualCommand(
@@ -170,25 +198,33 @@ public class RobotContainer {
                 controller.b_RightBumper()
                                 .toggleOnTrue(new AutoLockPIDCommand(driveTrain));
 
+                // Toggle IR sensor
                 stick.b_Trigger()
                                 .onTrue(new ClawAutoIRClose(claw));
+
+                // Toggle Limelight Auto Aim
+                stick.b_BottomBL()
+                                .toggleOnTrue(new LimelightAlignTargetCommand(driveTrain, limelight));
+
+                // Zero out the elbow, slide, and lift
+                controller.b_Back()
+                                .toggleOnTrue(new RezeroAllInstantCommand(elbow, slide, lift));
 
                 // Auto lift to Upper Goal
                 controller.b_X()
                                 .toggleOnTrue(
                                                 new ParallelCommandGroup(
-                                                                new LiftPIDControlCommand(lift, 360),
+                                                                new LiftPIDControlCommand(lift, 225),
                                                                 new SlidePIDControlCommand(slide, -257),
                                                                 new SequentialCommandGroup(
-                                                                                new WaitCommand(2),
-                                                                                new ElbowPIDControlCommand(elbow,
-                                                                                                -130))));
+                                                                                new WaitCommand(1.25),
+                                                                                new ElbowPIDControlCommand(elbow, -120))));
 
                 // Auto lift to Lower Goal
                 controller.b_A()
                                 .toggleOnTrue(
                                                 new ParallelCommandGroup(
-                                                                new LiftPIDControlCommand(lift, 168),
+                                                                new LiftPIDControlCommand(lift, 84),
                                                                 new SlidePIDControlCommand(slide, 0),
                                                                 new ElbowPIDControlCommand(elbow, -145)));
 
@@ -196,7 +232,7 @@ public class RobotContainer {
                 controller.b_RightStick()
                                 .toggleOnTrue(
                                                 new ParallelCommandGroup(
-                                                                new LiftPIDControlCommand(lift, 250),
+                                                                new LiftPIDControlCommand(lift, 125),
                                                                 new SlidePIDControlCommand(slide, 0),
                                                                 new ElbowPIDControlCommand(elbow, -150)));
 
@@ -208,8 +244,8 @@ public class RobotContainer {
                                                 new ElbowPIDControlCommand(elbow, 0)));
 
                 // Turn drive motor brake on and off
-                controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
-                controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
+                // controller.b_Back().onTrue(new BrakeOnCommand(driveTrain));
+                // controller.b_Start().onTrue(new BrakeOffCommand(driveTrain));
 
                 // Open and close the claw
                 // Note: The code knows if it's open or closed and will automaticly do the other
@@ -225,7 +261,9 @@ public class RobotContainer {
                 // return BalanceOnly; // Backwards auto balance
                 // return HighGoalOnly; // High Goal
                 // return LowGoalOnly; // Low Goal
-                // return LowGoalBalance; // Low goal auto balance (NOT TESTED)
-                 return HighGoalBalance; // High Goal then balance (cannot finish in 15 seconds at this time)
+                // return LowGoalBalance; // Low goal auto balance
+                // return LowGoalBalanceBlue; // Muskegon Blue low auto balance
+                // return HighGoalBalance; // High Goal then balance
+                 return ScoreTwice; // Score, grab another piece and score [WIP]
         }
 }
