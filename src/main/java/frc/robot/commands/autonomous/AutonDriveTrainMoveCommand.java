@@ -9,40 +9,42 @@ import frc.robot.utils.SimpleControllerSlow;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutonDriveTrainMoveCommand extends CommandBase {
-  private final SimpleControllerSlow controller;
-  private final DriveTrain driveTrain;
-  private double relativeSetpoint = 0;
-  private double maxSpeed;
 
-  public AutonDriveTrainMoveCommand(DriveTrain driveTrain, double setpoint, double maxSpeed) {
-    this.driveTrain = driveTrain;
-    this.relativeSetpoint = setpoint;
-    this.maxSpeed = maxSpeed;
-    addRequirements(driveTrain);
-    controller = new SimpleControllerSlow(0.01, 0.05, driveTrain::getLeftDistance,
-        (output) -> driveTrain.drive(output, 0, true), maxSpeed);
+    private final SimpleControllerSlow controller;
+    private final DriveTrain driveTrain;
+    private double relativeSetpoint = 0;
+    private double maxSpeed;
 
-    controller.setTolerance(5);
-  }
+    public AutonDriveTrainMoveCommand(DriveTrain driveTrain, double setpoint, double maxSpeed) {
+        this.driveTrain = driveTrain;
+        this.relativeSetpoint = setpoint;
+        this.maxSpeed = maxSpeed;
 
-  @Override
-  public void initialize() {
-    controller.setSetpoint(driveTrain.getLeftDistance() + relativeSetpoint);
-    controller.enable();
-  }
+        addRequirements(driveTrain);
+        controller = new SimpleControllerSlow(0.01, 0.05, driveTrain::getLeftDistance,
+                (output) -> driveTrain.drive(output, 0, true), maxSpeed);
 
-  @Override
-  public void execute() {
-    controller.execute();
-  }
+        controller.setTolerance(5);
+    }
 
-  @Override
-  public void end(boolean interrupted) {
-    controller.disable();
-  }
+    @Override
+    public void initialize() {
+        controller.setSetpoint(driveTrain.getLeftDistance() + relativeSetpoint);
+        controller.enable();
+    }
 
-  @Override
-  public boolean isFinished() {
-    return controller.atSetpoint();
-  }
+    @Override
+    public void execute() {
+        controller.execute();
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        controller.disable();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return controller.atSetpoint();
+    }
 }

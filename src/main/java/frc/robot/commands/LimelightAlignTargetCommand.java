@@ -13,7 +13,7 @@ public class LimelightAlignTargetCommand extends PIDCommand {
   public LimelightAlignTargetCommand(DriveTrain driveTrain, Limelight limelight) {
     super(
       // PID controller
-      new PIDController(0.075, 0.05, 0),
+      new PIDController(0.045, 0.06, 0),
       // Measurement
       () -> limelight.validTarget() ? limelight.getNormalXOffset() - 10.5 : 0.0,
       // The PID setpoint (0 so we can center the bot)

@@ -12,82 +12,91 @@ import frc.robot.Constants.CANMapping;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class DriveTrain extends SubsystemBase {
-  private final WPI_VictorSPX motorFL = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_FL);
-  private final WPI_VictorSPX motorFR = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_FR);
-  private final WPI_VictorSPX motorBL = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_BL);
-  private final WPI_VictorSPX motorBR = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_BR);
+    private final WPI_VictorSPX motorFL = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_FL);
+    private final WPI_VictorSPX motorFR = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_FR);
+    private final WPI_VictorSPX motorBL = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_BL);
+    private final WPI_VictorSPX motorBR = new WPI_VictorSPX(CANMapping.VICTORSPX_DRIVE_BR);
 
-  private final MotorControllerGroup groupL = new MotorControllerGroup(motorFL, motorBL);
-  private final MotorControllerGroup groupR = new MotorControllerGroup(motorFR, motorBR);
+    private final MotorControllerGroup groupL = new MotorControllerGroup(motorFL, motorBL);
+    private final MotorControllerGroup groupR = new MotorControllerGroup(motorFR, motorBR);
 
-  private final Encoder encoderRight = new Encoder(5, 6);
-  private final Encoder encoderLeft = new Encoder(7, 8);
+    private final Encoder encoderRight = new Encoder(5, 6);
+    private final Encoder encoderLeft = new Encoder(7, 8);
 
-  private final DifferentialDrive differentialDrive = new DifferentialDrive(groupL, groupR);
+    private final DifferentialDrive differentialDrive = new DifferentialDrive(groupL, groupR);
 
-  private final PigeonIMU pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
+    private final PigeonIMU pigeonIMU = new PigeonIMU(CANMapping.PIGEON_IMU);
 
-  private static DriveTrain instance;
+    private static DriveTrain instance;
 
-  public static DriveTrain getInstance() {
-    if (instance == null)
-      instance = new DriveTrain();
-    return instance;
-  }
-
-  private DriveTrain() {
-    groupL.setInverted(true);
-  }
-
-  public void drive(double forwards, double rotate, boolean quickTurn) {
-    if (quickTurn) {
-      rotate *= .5;
+    public static DriveTrain getInstance() {
+        if (instance == null)
+            instance = new DriveTrain();
+        return instance;
     }
-    differentialDrive.curvatureDrive(forwards, -rotate, quickTurn);
-  }
 
-  public void setBrakeMode(boolean enabled) {
-    motorBL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-    motorBR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-    motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-    motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
-  }
+    public Boolean getEncoderLeft() {
+        return encoderLeft.getStopped();
+    }
 
-  public void stop() {
-    drive(0, 0, false);
-  }
+    private DriveTrain() {
+        groupL.setInverted(true);
+    }
 
-  public double getGyroYaw() {
-    double[] ypr = new double[3];
-    pigeonIMU.getYawPitchRoll(ypr);
-    return ypr[0];
-  }
+    public void drive(double forwards, double rotate, boolean quickTurn) {
+        if (quickTurn) {
+            rotate *= .5;
+        }
+        differentialDrive.curvatureDrive(forwards, -rotate, quickTurn);
+    }
 
-  public double getGyroPitch() {
-    double[] ypr = new double[3];
-    pigeonIMU.getYawPitchRoll(ypr);
-    return ypr[1];
-  }
+    public void setBrakeMode(boolean enabled) {
+        motorBL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+        motorBR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+        motorFL.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+        motorFR.setNeutralMode(enabled ? NeutralMode.Brake : NeutralMode.Coast);
+    }
 
-  // Returns Left Encoder current distance
-  public double getLeftDistance() {
-    double LeftD = 0;
-    LeftD = encoderLeft.getDistance();
-    return LeftD;
-  }
+    public void stop() {
+        drive(0, 0, false);
+    }
 
-  // Returns Right Encoder current distance
-  public double getRightDistance() {
-    double RightD = 0;
-    RightD = encoderRight.getDistance();
-    return RightD;
-  }
+    public double getGyroYaw() {
+        double[] ypr = new double[3];
+        pigeonIMU.getYawPitchRoll(ypr);
+        return ypr[0];
+    }
 
-  @Override
-  public void periodic() {
-    // SmartDashboard.putNumber("Yaw", getGyroYaw());
-    SmartDashboard.putNumber("Pitch", getGyroPitch());
-    //SmartDashboard.putNumber("EncoderR", encoderRight.getDistance());
-    //SmartDashboard.putNumber("EncoderL", encoderLeft.getDistance());
-  }
+    public double getGyroPitch() {
+        double[] ypr = new double[3];
+        pigeonIMU.getYawPitchRoll(ypr);
+        return ypr[1];
+    }
+
+    // Returns Left Encoder current distance
+    public double getLeftDistance() {
+        double LeftD = 0;
+        LeftD = encoderLeft.getDistance();
+        return LeftD;
+    }
+
+    // Returns Right Encoder current distance
+    public double getRightDistance() {
+        double RightD = 0;
+        RightD = encoderRight.getDistance();
+        return RightD;
+    }
+
+    @Override
+    public void periodic() {
+        // SmartDashboard.putNumber("Yaw", getGyroYaw());
+        SmartDashboard.putNumber("Pitch", getGyroPitch());
+        // SmartDashboard.putNumber("EncoderR", encoderRight.getDistance());
+        // SmartDashboard.putNumber("EncoderL", encoderLeft.getDistance());
+        if (encoderLeft.getStopped()) {
+            SmartDashboard.putString("Left Encoder Status", "OFF");
+        } else {
+            SmartDashboard.putString("Left Encoder Status", "ON");
+        }
+    }
 }

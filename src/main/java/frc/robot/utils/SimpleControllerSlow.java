@@ -1,7 +1,12 @@
 package frc.robot.utils;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+
+import frc.robot.subsystems.DriveTrain;
 
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -12,6 +17,8 @@ public class SimpleControllerSlow {
   protected double kP;
   protected double minOutput;
   protected double maxSpeed;
+  
+  private boolean threadRunning = false;
 
   protected final DoubleSupplier inputSupplier;
   protected final DoubleConsumer outputConsumer;
@@ -69,6 +76,23 @@ public class SimpleControllerSlow {
       outputConsumer.accept(0);
       return;
     }
+
+    if (!threadRunning){
+        final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        
+        threadRunning = true;
+        // Waits a second without stopping any other code
+        final Runnable moveCheck = new Runnable(){
+          public void run(){
+            var current = inputSupplier.getAsDouble();
+            if (current == 0){
+                disable();
+            }
+          }
+        };
+        executorService.schedule(moveCheck, 500, TimeUnit.MILLISECONDS);
+    }
+
     var current = inputSupplier.getAsDouble();
     var error = current - setpoint;
     //SmartDashboard.putNumber("Setpoint", setpoint);
