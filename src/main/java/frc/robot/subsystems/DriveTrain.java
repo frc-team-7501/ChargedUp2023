@@ -87,12 +87,17 @@ public class DriveTrain extends SubsystemBase {
         return RightD;
     }
 
+    public void resetEncoders(){
+        encoderLeft.reset();
+        encoderRight.reset();
+    }
+
     @Override
     public void periodic() {
         // SmartDashboard.putNumber("Yaw", getGyroYaw());
         SmartDashboard.putNumber("Pitch", getGyroPitch());
-        // SmartDashboard.putNumber("EncoderR", encoderRight.getDistance());
-        // SmartDashboard.putNumber("EncoderL", encoderLeft.getDistance());
+        SmartDashboard.putNumber("EncoderR", encoderRight.getDistance());
+        SmartDashboard.putNumber("EncoderL", encoderLeft.getDistance());
         if (encoderLeft.getStopped()) {
             SmartDashboard.putString("Left Encoder Status", "OFF");
         } else {
