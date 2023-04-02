@@ -22,7 +22,7 @@ public class AutonDriveTrainMoveCommand extends CommandBase {
 
         addRequirements(driveTrain);
         controller = new SimpleControllerSlow(0.01, 0.05, driveTrain::getLeftDistance,
-                (output) -> driveTrain.drive(output, 0, true), maxSpeed);
+                (output) -> driveTrain.drive(output, .056, true), maxSpeed);
 
         controller.setTolerance(5);
     }

@@ -19,6 +19,7 @@ import frc.robot.commands.autonomous.AutonDriveTrainTurnPIDCommand;
 import frc.robot.commands.autonomous.AutonElbowPIDControlCommand;
 import frc.robot.commands.autonomous.AutonLiftPIDControlCommand;
 import frc.robot.commands.autonomous.AutonSlidePIDControlCommand;
+import frc.robot.commands.autonomous.MoveToEncoderPitchCommand;
 import frc.robot.commands.autonomous.MoveToPitch;
 import frc.robot.subsystems.*;
 import frc.robot.utils.ExtendedJoystick;
@@ -58,19 +59,18 @@ public class RobotContainer {
                     new AutonElbowPIDControlCommand(elbow, 0),
                     new AutonSlidePIDControlCommand(slide, 0),
                     new AutonLiftPIDControlCommand(lift, 0),
-                    new AutonDriveTrainMoveCommand(driveTrain, -2900, .5)),
+                    new AutonDriveTrainMoveCommand(driveTrain, -2850, .5)),
             new WaitCommand(.5),
-            new AutonDriveTrainTurnCommand(driveTrain, 484, 1));
+            new AutonDriveTrainTurnCommand(driveTrain, 540, 1));
     // #endregion
 
     // #region BalanceOnly
     // Auton moves backwards and balances the robot
     private final Command BalanceOnly = new SequentialCommandGroup(
-            new MoveToPitch(driveTrain, 15, .4),
+            new MoveToEncoderPitchCommand(driveTrain, 15, .4),
             new AutonAutoBalancePIDCommand(driveTrain),
             new AutoLockPIDCommand(driveTrain));
     // #endregion
-
     // #region HighGoalOnly
     // Auton extends and drops a cone/cube on the high goal
     private final Command HighGoalOnly = new SequentialCommandGroup(
@@ -166,26 +166,24 @@ public class RobotContainer {
     // #region ScoreTwice
     // Scores once, picks up, then scores again [WIP]
     private final Command ScoreTwice = new SequentialCommandGroup(
-        new ParallelCommandGroup(
-                new AutonLiftPIDControlCommand(lift, 225),
-                new AutonSlidePIDControlCommand(slide, -257),
-                new ClawOperateInstantCommand(claw),
-                new SequentialCommandGroup(
-                        new WaitCommand(1),
-                        new AutonElbowPIDControlCommand(elbow, -140))),
-        new ClawOperateInstantCommand(claw),
-        new WaitCommand(0.4),
-        new ParallelCommandGroup(
-                new AutonElbowPIDControlCommand(elbow, 0),
-                new AutonSlidePIDControlCommand(slide, 0),
-                new AutonLiftPIDControlCommand(lift, 0),
-                new AutonDriveTrainMoveCommand(driveTrain, -100, .5)),
-        new WaitCommand(.2),
-        new AutonDriveTrainTurnCommand(driveTrain, 484, .6), 
-        new WaitCommand(.2),
-        new AutonDriveTrainMoveCommand(driveTrain, 2700, .5));
-;
-            
+            new ParallelCommandGroup(
+                    new AutonLiftPIDControlCommand(lift, 225),
+                    new AutonSlidePIDControlCommand(slide, -257),
+                    new ClawOperateInstantCommand(claw),
+                    new SequentialCommandGroup(
+                            new WaitCommand(1),
+                            new AutonElbowPIDControlCommand(elbow, -140))),
+            new ClawOperateInstantCommand(claw),
+            new WaitCommand(0.4),
+            new ParallelCommandGroup(
+                    new AutonElbowPIDControlCommand(elbow, 0),
+                    new AutonSlidePIDControlCommand(slide, 0),
+                    new AutonLiftPIDControlCommand(lift, 0),
+                    new AutonDriveTrainMoveCommand(driveTrain, -2700, .5)),
+            new WaitCommand(.5),
+            new AutonDriveTrainTurnCommand(driveTrain, 540, 1),
+            new WaitCommand(.6));
+
     // #endregion
 
     // #region TurnBot
@@ -315,7 +313,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // [MAIN AUTONS]
-        // return HighGoalBackupTurn; // Place piece high, back up, turn 180
+         return HighGoalBackupTurn; // Place piece high, back up, turn 180
         // return HighGoalBalance; // High Goal then balance
         // return LowGoalBalance; // Low goal auto balance
 
@@ -327,7 +325,7 @@ public class RobotContainer {
 
         // [TESTS DO NOT USE]
         // return LowGoalBalanceBlue; // Muskegon Blue low auto balance
-         return ScoreTwice; // Score, grab another piece and score [WIP]
+        //return ScoreTwice; // Score, grab another piece and score [WIP]
         // return TurnBot; // Turns the bot for testing [WIP]
     }
 }

@@ -4,47 +4,57 @@
 
 package frc.robot.commands.autonomous;
 
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.utils.SimpleControllerSlow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveTrain;
 
 public class MoveToEncoderPitchCommand extends CommandBase {
+  private final DriveTrain driveTrain;
+  private final double targetPitch;
+  private final double roboSpeed;
+  private boolean onTarget = false;
 
-    private final SimpleControllerSlow controller;
-    private final DriveTrain driveTrain;
-    private double relativeSetpoint = 0;
-    private double maxSpeed;
+  /** Creates a new MoveToPitch. */
+  public MoveToEncoderPitchCommand(final DriveTrain driveTrain, final double targetPitch, final double roboSpeed) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(driveTrain);
+    this.driveTrain = driveTrain;
+    this.targetPitch = targetPitch;
+    this.roboSpeed = roboSpeed;
+  }
 
-    public MoveToEncoderPitchCommand(DriveTrain driveTrain, double setpoint, double maxSpeed) {
-        this.driveTrain = driveTrain;
-        this.relativeSetpoint = setpoint;
-        this.maxSpeed = maxSpeed;
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-        addRequirements(driveTrain);
-        controller = new SimpleControllerSlow(0.01, 0.05, driveTrain::getLeftDistance,
-                (output) -> driveTrain.drive(output, 0, true), maxSpeed);
-
-        controller.setTolerance(5);
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    // === DO NOT REMOVE ===
+    //SmartDashboard.putString("String", "sting :)");
+    // === DO NOT REMOVE ===
+    SmartDashboard.putNumber("encoder", driveTrain.getLeftDistance());
+    double robotPitch = driveTrain.getGyroPitch();
+    if (Math.abs(robotPitch) < targetPitch && driveTrain.getLeftDistance() > -3000) {
+        driveTrain.drive(roboSpeed, 0, false);
+    } else {
+        driveTrain.drive(0, 0, false);
+        onTarget = true;
     }
+  }
 
-    @Override
-    public void initialize() {
-        controller.setSetpoint(driveTrain.getLeftDistance() + relativeSetpoint);
-        controller.enable();
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
 
-    @Override
-    public void execute() {
-        controller.execute();
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    if (onTarget){
+      onTarget = false;
+      return true;
     }
-
-    @Override
-    public void end(boolean interrupted) {
-        controller.disable();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return controller.atSetpoint();
-    }
+    return false;
+  }
 }
