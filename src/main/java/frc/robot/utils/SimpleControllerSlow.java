@@ -20,8 +20,8 @@ public class SimpleControllerSlow {
   
   private boolean threadRunning = false;
 
-  protected final DoubleSupplier inputSupplier;
-  protected final DoubleConsumer outputConsumer;
+  protected DoubleSupplier inputSupplier;
+  protected DoubleConsumer outputConsumer;
   
   public SimpleControllerSlow(double kP, double minOutput, DoubleSupplier inputSupplier, DoubleConsumer outputConsumer, double maxSpeed) {
     this.inputSupplier = inputSupplier;

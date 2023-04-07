@@ -14,6 +14,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommand;
 import frc.robot.commands.autonomous.AutonAutoBalancePIDCommandBlue;
 import frc.robot.commands.autonomous.AutonDriveTrainMoveCommand;
+import frc.robot.commands.autonomous.AutonDriveTrainMoveCommandCOPY;
 import frc.robot.commands.autonomous.AutonDriveTrainTurnCommand;
 import frc.robot.commands.autonomous.AutonDriveTrainTurnPIDCommand;
 import frc.robot.commands.autonomous.AutonElbowPIDControlCommand;
@@ -51,8 +52,8 @@ public class RobotContainer {
                     new AutonSlidePIDControlCommand(slide, -257),
                     new ClawOperateInstantCommand(claw),
                     new SequentialCommandGroup(
-                            new WaitCommand(1),
-                            new AutonElbowPIDControlCommand(elbow, -140))),
+                            new WaitCommand(.75),
+                            new AutonElbowPIDControlCommand(elbow, -150))),
             new ClawOperateInstantCommand(claw),
             new WaitCommand(0.4),
             new ParallelCommandGroup(
@@ -150,15 +151,15 @@ public class RobotContainer {
                     new AutonSlidePIDControlCommand(slide, -257),
                     new ClawOperateInstantCommand(claw),
                     new SequentialCommandGroup(
-                            new WaitCommand(1),
-                            new AutonElbowPIDControlCommand(elbow, -140))),
+                            new WaitCommand(.75),
+                            new AutonElbowPIDControlCommand(elbow, -150))),
             new ClawOperateInstantCommand(claw),
             new WaitCommand(0.4),
             new ParallelCommandGroup(
                     new AutonElbowPIDControlCommand(elbow, 0),
                     new AutonSlidePIDControlCommand(slide, 0),
                     new AutonLiftPIDControlCommand(lift, 0)),
-            new MoveToPitch(driveTrain, 15, .5),
+            new MoveToEncoderPitchCommand(driveTrain, 15, .5),
             new AutonAutoBalancePIDCommand(driveTrain),
             new AutoLockPIDCommand(driveTrain));
     // #endregion
@@ -197,7 +198,20 @@ public class RobotContainer {
     // #region Backup
     // Just backs up out of the starting area and does nothing else
     private final Command Backup = new SequentialCommandGroup(
-            new AutonDriveTrainMoveCommand(driveTrain, -2900, .3));
+            new ParallelCommandGroup(
+                    new AutonLiftPIDControlCommand(lift, 225),
+                    new AutonSlidePIDControlCommand(slide, -257),
+                    new ClawOperateInstantCommand(claw),
+                    new SequentialCommandGroup(
+                            new WaitCommand(.75),
+                            new AutonElbowPIDControlCommand(elbow, -150))),
+            new ClawOperateInstantCommand(claw),
+            new WaitCommand(0.4),
+            new ParallelCommandGroup(
+                    new AutonElbowPIDControlCommand(elbow, 0),
+                    new AutonSlidePIDControlCommand(slide, 0),
+                    new AutonLiftPIDControlCommand(lift, 0)),
+                    new AutonDriveTrainMoveCommandCOPY(driveTrain, -2900, .7));
     // #endregion
 
     // #endregion
@@ -272,8 +286,8 @@ public class RobotContainer {
                                 new LiftPIDControlCommand(lift, 225),
                                 new SlidePIDControlCommand(slide, -257),
                                 new SequentialCommandGroup(
-                                        new WaitCommand(1.25),
-                                        new ElbowPIDControlCommand(elbow, -120))));
+                                        new WaitCommand(1),
+                                        new ElbowPIDControlCommand(elbow, -145))));
 
         // Auto lift to Lower Goal
         controller.b_A()
@@ -325,7 +339,7 @@ public class RobotContainer {
 
         // [TESTS DO NOT USE]
         // return LowGoalBalanceBlue; // Muskegon Blue low auto balance
-        //return ScoreTwice; // Score, grab another piece and score [WIP]
+        // return ScoreTwice; // Score, grab another piece and score [WIP]
         // return TurnBot; // Turns the bot for testing [WIP]
     }
 }

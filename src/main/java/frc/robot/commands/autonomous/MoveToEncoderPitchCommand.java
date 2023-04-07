@@ -36,7 +36,7 @@ public class MoveToEncoderPitchCommand extends CommandBase {
     // === DO NOT REMOVE ===
     SmartDashboard.putNumber("encoder", driveTrain.getLeftDistance());
     double robotPitch = driveTrain.getGyroPitch();
-    if (Math.abs(robotPitch) < targetPitch && driveTrain.getLeftDistance() > -3000) {
+    if (Math.abs(robotPitch) < targetPitch && driveTrain.getLeftDistance() > -2800) {
         driveTrain.drive(roboSpeed, 0, false);
     } else {
         driveTrain.drive(0, 0, false);
